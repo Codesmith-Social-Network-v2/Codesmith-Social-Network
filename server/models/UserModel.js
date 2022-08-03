@@ -51,6 +51,7 @@ module.exports = {
 
 
 // Not an impacting changegit
+
 // in terminal: npm i psql
 // psql <connect string>
 // \d (will get the list of dbs relations)

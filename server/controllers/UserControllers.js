@@ -153,7 +153,7 @@ userControllers.createUser = async (req, res, next) => {
     const text = 'INSERT INTO residents (name, photo, cohort, organization, linkedin, message, email) VALUES($1, $2, $3, $4, $5, $6, $7)';
     await db.query(text, values);
     const userCreated = await db.query('SELECT id FROM residents ORDER BY id DESC LIMIT 1');
-    console.log('New user ID', userCreated.rows[0].id);
+    // console.log('New user ID', userCreated.rows[0].id);
     // console.logging userCreated object:
     console.log('New user created: ', userCreated, 'rows[0]: ', userCreated.rows[0]);
 

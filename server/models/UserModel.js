@@ -3,57 +3,84 @@ const { PG_URI } = require('../secrets');
 
 //Object with connectionString to our postgresURL
 const pool = new Pool({
-  connectionString: PG_URI
+  connectionString: PG_URI,
 });
-
 
 //Export object with query method
 module.exports = {
   // query (as specified in userController) params ($1, etc.), callback (???)
   // ex: const text = 'SELECT id FROM residents WHERE email = $1';
   // const idFound = await db.query(text, [email]);
-  
+
   query: (text, params, callback) => {
     console.log('Query: ', text);
     return pool.query(text, params, callback);
-  }
-}
+  },
+};
 
 
+
+// ALTER TABLE residents ADD column access_token varchar(500);
+
+// SELECT pg_terminate_backend(pg_stat_activity.pid)
+// FROM pg_stat_activity
+// WHERE pg_stat_activity.datname = 'llrsxwel'  AND pid <> pg_backend_pid();
+
+
+
+
+
+// new db schema for brett's db
+
+// CREATE TABLE "residents" (
+// 	"id" serial NOT NULL,
+// 	"name" varchar(100) NOT NULL,
+// 	"photo" varchar(250),
+// 	"cohort" varchar(150) NOT NULL,
+// 	"organization" varchar(150),
+// 	"linkedin" varchar(150) NOT NULL,
+// 	"message" varchar(150),
+// 	"email" varchar(150),
+// 	"access_token" varchar(500) NOT NULL,
+// 	CONSTRAINT "residents_pk" PRIMARY KEY ("id")
+// ) WITH (
+//   OIDS=FALSE
+// );
+
+
+
+
+// Not an impacting changegit
 
 // in terminal: npm i psql
 // psql <connect string> // psql <paste string from secrets.js>
 // \d (will get the list of dbs relations)
-// \dS+
+// '\dS+ residents' will get the residents table Schema
 
-
-            // List of relations
-// Schema |        Name        |   Type   |  Owner   
+// List of relations
+// Schema |        Name        |   Type   |  Owner
 // --------+--------------------+----------+----------
 // public | pg_stat_statements | view     | postgres
 // public | residents          | table    | llrsxwel
-// public | residents_id_seq   | sequence | llrsxwel
+// public | residents_id_seq   | sequence | p
 
+// Residents table Schema
 
-                                                            // Residents table Schema
-
-//   Column      |          Type          | Collation | Nullable |                Default                | Storage  | Stats target | Description 
+//   Column      |          Type          | Collation | Nullable |                Default                | Storage  | Stats target | Description
 // --------------+------------------------+-----------+----------+---------------------------------------+----------+--------------+-------------
-//  id           | integer                |           | not null | nextval('residents_id_seq'::regclass) | plain    |              | 
-//  name         | character varying(100) |           | not null |                                       | extended |              | 
-//  photo        | character varying(250) |           |          |                                       | extended |              | 
-//  cohort       | character varying(150) |           | not null |                                       | extended |              | 
-//  organization | character varying(150) |           |          |                                       | extended |              | 
-//  linkedin     | character varying(150) |           | not null |                                       | extended |              | 
-//  message      | character varying(100) |           |          |                                       | extended |              | 
-//  email        | character varying(100) |           |          |                                       | extended |              | 
+//  id           | integer                |           | not null | nextval('residents_id_seq'::regclass) | plain    |              |
+//  name         | character varying(100) |           | not null |                                       | extended |              |
+//  photo        | character varying(250) |           |          |                                       | extended |              |
+//  cohort       | character varying(150) |           | not null |                                       | extended |              |
+//  organization | character varying(150) |           |          |                                       | extended |              |
+//  linkedin     | character varying(150) |           | not null |                                       | extended |              |
+//  message      | character varying(100) |           |          |                                       | extended |              |
+//  email        | character varying(100) |           |          |                                       | extended |              |
 // Indexes:
-
-
 
 // SELECT * FROM residents;
 
-//  id |          name          |                                                                photo                                                                 | cohort  | organization |                      linkedin                       |   message   |            email            
+//  id |          name          |                                                                photo                                                                 | cohort  | organization |                      linkedin                       |   message   |            email
 // ----+------------------------+--------------------------------------------------------------------------------------------------------------------------------------+---------+--------------+-----------------------------------------------------+-------------+-----------------------------
 //  89 | Crystal Agoncillo, MPA |                                                                                                                                      | FTRI 10 | undefined    | https://www.linkedin.com/in/agoncillo/              |             | crystal.agoncillo@gmail.com
 //  73 | Tyler Wilson           | https://hips.hearstapps.com/wdy.h-cdn.co/assets/17/39/cola-0247.jpg                                                                  | FTRI 10 | Google       | https://www.linkedin.com/in/tyler-wilson-bb029b24/  | Now hiring! | wilsontyler95@gmail.com
@@ -62,9 +89,6 @@ module.exports = {
 //  86 | Seok Jung              | https://cdn.discordapp.com/attachments/1002601884323950764/1003807856916713572/1647874988610.jpg                                     | FTRI 10 | Yahoo        | undefined                                           |             | andrewjung89@icloud.com
 //  87 | Luke Roberts           |                                                                                                                                      | FTRI 10 | Codesmith    |                                                     |             | d94cowboys@gmail.com
 //  88 | Samee Vohra            |                                                                                                                                      | FTRI 10 | Codesmith    | https://www.linkedin.com/in/sameev/                 |             | eemas91@hotmail.com
-
-
-
 
 // Residents table in database
 // residents (
@@ -75,18 +99,6 @@ module.exports = {
 //    organization varchar( 150 ),
 //    linkedin varchar( 150 ) NOT NULL
 // );
-
-
-
-
-
-
-
-
-
-
-
-
 
 // MAYBE
 // case 'species':

@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/',
   (req, res, next) => {
-    console.log(req.cookies);
+    console.log('LOGGING REQ.COOKIES: ', req.cookies, ' END OF REQ.COOKIES');
     return next()
   },
   exchangeCode,

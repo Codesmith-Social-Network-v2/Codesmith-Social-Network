@@ -13,6 +13,7 @@ export const HomeContainer = (props) => {
   const [userId, setUserId] = useState(1);
   let elem;
 
+  // React Router without react router
   if (active === 'Home') {
     elem = <div className="DisplayBox"><HomePage /></div>;
   } else if (active === 'Organization') {

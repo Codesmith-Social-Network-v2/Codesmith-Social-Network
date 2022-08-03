@@ -36,7 +36,7 @@ userControllers.loadCohorts = async (req, res, next) => {
     res.locals.cohortsLoad = cohortsLoad.rows;
     return next();
   } catch (error) {
-    return next({ log: `userControllers.loadCohorts error: ${error}`, message: 'Erorr found @ userControllers.loadCohorts' });
+    return next({ log: `userControllers.loadCohorts error: ${error}`, message: 'Error found @ userControllers.loadCohorts' });
   }
 };
 
@@ -144,7 +144,7 @@ userControllers.verifyUserExists = async (req, res, next) => {
 //@value ( res.locals.userCreated ) New user created in table residents
 userControllers.createUser = async (req, res, next) => {
   try {
-    if(res.locals.shouldSkipCreateUser) return next();
+    if (res.locals.shouldSkipCreateUser) return next();
     const {
       name,
       email,
@@ -153,7 +153,9 @@ userControllers.createUser = async (req, res, next) => {
     const text = 'INSERT INTO residents (name, photo, cohort, organization, linkedin, message, email) VALUES($1, $2, $3, $4, $5, $6, $7)';
     await db.query(text, values);
     const userCreated = await db.query('SELECT id FROM residents ORDER BY id DESC LIMIT 1');
-    console.log(userCreated.rows[0].id);
+    console.log('New user ID', userCreated.rows[0].id);
+    // console.logging userCreated object:
+    console.log('New user created: ', userCreated, 'rows[0]: ', userCreated.rows[0]);
 
     res.cookie('userId', userCreated.rows[0].id);
     

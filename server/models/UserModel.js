@@ -53,7 +53,7 @@ module.exports = {
 // Not an impacting changegit
 
 // in terminal: npm i psql
-// psql <connect string>
+// psql <connect string> // psql <paste string from secrets.js>
 // \d (will get the list of dbs relations)
 // '\dS+ residents' will get the residents table Schema
 

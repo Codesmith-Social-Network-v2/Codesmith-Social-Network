@@ -75,7 +75,8 @@ userControllers.findUserByName = async (req, res, next) => {
 
 //Controller to find user by Id
 userControllers.findUserById = async (req, res, next) => {
-  console.log(req.body);
+  console.log('hello from userControllers.findUserById');
+  console.log(req.body); // if req.body is {}, id doesn't exist
   const text = `SELECT * FROM residents WHERE id=${req.body.id}`;
   try {
     const userFound = await db.query(text);
@@ -118,6 +119,8 @@ userControllers.findUserByCohort = async (req, res, next) => {
 
 //Check to see if user already exists in Codesmith Social Network Database
 userControllers.verifyUserExists = async (req, res, next) => {
+  // console.log('hello from userControllers.js verifyUserExists!');
+  console.log('req.cookies', req.cookies);
   //obtain email from prev res.locals.email stored during previous middleware function
   const email = res.locals.email;
   const text = 'SELECT id FROM residents WHERE email = $1';
@@ -135,6 +138,7 @@ userControllers.verifyUserExists = async (req, res, next) => {
     } 
     return next();
   } catch (error) {
+    console.log('err in userControllers.verifyUserExists: ', error);
     return next({ log: `userControllers.verifyUserExists error: ${error}`, message: 'Erorr found @ userControllers.VerifyUserExists' });
 
   }

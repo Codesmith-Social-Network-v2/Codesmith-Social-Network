@@ -119,7 +119,7 @@ userControllers.findUserByCohort = async (req, res, next) => {
 
 //Check to see if user already exists in Codesmith Social Network Database
 userControllers.verifyUserExists = async (req, res, next) => {
-  console.log('hello from userControllers.js verifyUserExists!');
+  // console.log('hello from userControllers.js verifyUserExists!');
   console.log('req.cookies', req.cookies);
   //obtain email from prev res.locals.email stored during previous middleware function
   const email = res.locals.email;

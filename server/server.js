@@ -12,7 +12,7 @@ const cohortRouter = require('./routes/cohort');
 const oauthRouter = require('./routes/oauthRouter');
 const verifyRouter = require('./routes/verifyRouter');
 
-// const server = https.createServer({ key, cert }, app);
+// // const server = https.createServer({ key, cert }, app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,10 +44,10 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 400,
-    message: { err: 'An error occurred' }, 
+    message: { err: 'An error occurred' },
   };
 
-  const errorObj = Object.assign(defaultErr, err); 
+  const errorObj = Object.assign(defaultErr, err);
   console.log(errorObj.log);
 
   res.status(errorObj.status).send(errorObj.message);

@@ -12,7 +12,6 @@ router.get('/', exchangeCode, (req, res) => {
 // localhost:8080/verifyuser/complete
 router.get('/complete', userComplete, (req, res) => {
   return res.status(200).json(res.locals.complete);
-}
-);
+});
 
 module.exports = router;

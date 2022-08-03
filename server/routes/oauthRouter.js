@@ -8,6 +8,7 @@ const { route } = require('../server');
 const router = Router();
 
 router.get('/', 
+  // oauthController verify user middleware?
   exchangeCode, 
   callMeAPI,
   callEmailAPI, 

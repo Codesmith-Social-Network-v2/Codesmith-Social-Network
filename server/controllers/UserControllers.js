@@ -140,7 +140,6 @@ userControllers.verifyUserExists = async (req, res, next) => {
   } catch (error) {
     console.log('err in userControllers.verifyUserExists: ', error);
     return next({ log: `userControllers.verifyUserExists error: ${error}`, message: 'Error found @ userControllers.VerifyUserExists' });
-
   }
 };
 

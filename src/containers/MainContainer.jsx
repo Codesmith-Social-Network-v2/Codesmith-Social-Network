@@ -9,6 +9,7 @@ export default function MainContainer() {
   // const [isComplete, changeComplete] = useState(false);
 
   const getCookie = (cookie) => {
+    if (document.cookie) console.log('document.cookie:', document.cookie); // document.userId, document.linkedInAuthCode
     return document.cookie
       .split('; ')
       .find(row => row.startsWith(cookie + '='))
@@ -29,37 +30,48 @@ export default function MainContainer() {
       fetch('http://localhost:8080/verifyuser', {
         credentials: 'same-origin',
       })
-        .then(res => {
-          console.log(res);
-          if (res.status === 200) changeAuthenticated(true);
-        });
+      .then(res => {
+        console.log('res inside fetch call for /verifyuser: ', res);
+        if (res.status === 200) {
+          changeAuthenticated(true);
+
+          // document.cookie.userId is NOT null/undefined, then...
+          fetch('http://localhost:8080/verifyuser/complete')
+          .then(res => {
+            console.log('res before json()', res);
+            return res.json()
+          })
+          .then(res => {
+            console.log('res inside fetch call for /verifyuser/complete');
+            console.log('res returned from oauthController.userComplete:', res);
+            if (res) setCohort(true);
+          });
+        }
+      });
     } else {
+      console.log('user ID and/or auth token not found');
       changeAuthenticated(false);
     }
-    if (getCookie('userId')) {
-      fetch('http://localhost:8080/verifyuser/complete')
-        .then(res => res.json())
-        .then(res => {
-          console.log(res);
-          if (res) setCohort(true);
-        });
-    }
+    // if (getCookie('userId')) { // document.cookie.userId is NOT null/undefined, then...
+    //   fetch('http://localhost:8080/verifyuser/complete')
+    //     .then(res => res.json())
+    //     .then(res => {
+    //       console.log('res inside fetch call for /verifyuser/complete');
+    //       console.log('res returned from oauthController.userComplete:', res);
+    //       if (res) setCohort(true);
+    //     });
+    // }
   });
 
   return (
     <div className="MainContainer">
       {
         isAuthenticated
-          ? cohortIsSet
-            ? <HomeContainer changeAuthenticated={changeAuthenticated}/>
-            : <SetCohort setCohort={setCohort} />
-          : <LandingPage changeAuthenticated={changeAuthenticated} />
-        //   ? <HomeContainer changeAuthenticated={changeAuthenticated}/>
-        //   : <SetCohort setCohort={setCohort}/>
-        // : <LandingPage changeAuthenticated={changeAuthenticated} />
+          ? cohortIsSet // if isAuthenticated is true, then check if cohortIsSet is true or false
+            ? <HomeContainer changeAuthenticated={changeAuthenticated}/> // if cohortIsSet is true, render home page
+            : <SetCohort setCohort={setCohort} /> // if cohortIsSet is false, render set cohort page
+          : <LandingPage changeAuthenticated={changeAuthenticated} /> // if isAuthenticated is false, render landing page
       }
-
-      {/* {isComplete && <LandingPage changeComplete={changeComplete} />} */}
     </div>
   );
 }

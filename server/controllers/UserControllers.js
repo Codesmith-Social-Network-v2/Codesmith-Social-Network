@@ -1,6 +1,12 @@
 const db = require('../models/UserModel');
 const { PG_URI } = require('../secrets');
 
+var express = require('express')
+var cookieParser = require('cookie-parser')
+
+var app = express()
+app.use(cookieParser())
+
 const userControllers = {};
 
 // Load list of all users when residents tab is clicked.
@@ -119,19 +125,29 @@ userControllers.findUserByCohort = async (req, res, next) => {
 
 //Check to see if user already exists in Codesmith Social Network Database
 userControllers.verifyUserExists = async (req, res, next) => {
-  // console.log('hello from userControllers.js verifyUserExists!');
+  console.log('hello from userControllers.js verifyUserExists!');
   console.log('req.cookies', req.cookies);
   //obtain email from prev res.locals.email stored during previous middleware function
   const email = res.locals.email;
+  // retrieving accessToken from res.locals
+  const accessToken = res.locals.accessToken;
   const text = 'SELECT id FROM residents WHERE email = $1';
 
   try {
     const idFound = await db.query(text, [email]);
     //if email exists: create property on res.locals to skip create user middleware
     if (idFound.rows.length) {
-      console.log('We found an id',idFound.rows[0]);
+      const userId = idFound.rows[0].id;
+      console.log('We found an id', userId);
       res.locals.shouldSkipCreateUser = true;
-      res.cookie('userId', idFound.rows[0].id);
+      res.cookie('userId', userId);
+
+      console.log()
+
+      // add accessToken to residents table
+      const text = `UPDATE residents SET access_token='${accessToken}' WHERE id='${userId}'`;
+      await db.query(text);
+
     } else {
       console.log('No such user exists. Creating one');
       res.locals.shouldSkipCreateUser = false;
@@ -146,14 +162,19 @@ userControllers.verifyUserExists = async (req, res, next) => {
 //create new User from either res.locals.newUser or req.body... Not sure from where yet.
 //@value ( res.locals.userCreated ) New user created in table residents
 userControllers.createUser = async (req, res, next) => {
+  console.log('hello from userControllers.js createUser!');
+  console.log('res.locals.shouldSkipCreateUser:', res.locals.shouldSkipCreateUser);
   try {
     if (res.locals.shouldSkipCreateUser) return next();
     const {
       name,
       email,
+      accessToken // added accessToken from res.locals
     } = res.locals;
-    const values = [name, '', '', '', '', '', email];
-    const text = 'INSERT INTO residents (name, photo, cohort, organization, linkedin, message, email) VALUES($1, $2, $3, $4, $5, $6, $7)';
+    // added accessToken to values array
+    const values = [name, '', '', '', '', '', email, accessToken];
+    // added access_token to text query
+    const text = 'INSERT INTO residents (name, photo, cohort, organization, linkedin, message, email, access_token) VALUES($1, $2, $3, $4, $5, $6, $7, $8)';
     await db.query(text, values);
     const userCreated = await db.query('SELECT id FROM residents ORDER BY id DESC LIMIT 1');
     // console.log('New user ID', userCreated.rows[0].id);
@@ -191,6 +212,16 @@ userControllers.updateUser = async (req, res, next) => {
     return next({ log: `userControllers.updateUser error: ${err}`, message: 'Error found @ userControllers.updateUser' });
   }
 };
+
+// Postman POST request to "localhost:8080/residents/update"
+  // {
+  //   "user": {
+  //       "cohort": "FTRI10",
+  //       "name": "Will Paragraph"
+  //   },
+  //   "id": 2
+  // }
+
 // Register new user
 userControllers.registerUser = async (req, res, next) => {
   try {
@@ -214,8 +245,8 @@ userControllers.deleteUser = async (req, res, next) => {
   try {
     const text = `DELETE FROM residents WHERE id=${req.body.id}`;
     const userDeleted = await db.query(text);
+    console.log('userDeleted: ', userDeleted);
     res.locals.userDeleted = userDeleted;
-    
     return next();
   } catch (err) {
     return next({ log: `userControllers.deleteUser error: ${err}`, message: 'Error found @ userControllers.deleteUser' });

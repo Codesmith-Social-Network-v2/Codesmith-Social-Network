@@ -7,6 +7,7 @@ const router = Router();
 // localhost:8080/verifyuser
 router.get('/', exchangeCode, userComplete, (req, res) => {
   // return res.redirect('/');
+  console.log('hello from final func in /verifyuser GET request');
   return res.status(200).json(res.locals.complete);
 });
 

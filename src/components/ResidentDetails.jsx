@@ -33,9 +33,17 @@ export const ResidentDetails = (props) => {
       <button className="LogOutButton" onClick={() => {
         document.cookie = 'userId=0; path=/; max-age=0;';
         document.cookie = 'linkedInAuthCode=0; path=/; max-age=0;';
+        // clearing final cookie ('auth_token')
+        document.cookie = 'access_token=0; path=/; max-age=0;';
         props.changeAuthenticated(false);
-      }
-      }>Log out</button>
+      }}>
+        Log out
+      </button>
+      <form action="/residents/delete" method="POST">
+        <button className="SaveButton">
+          Delete Account
+        </button>
+      </form>
     </div>
   );
 };

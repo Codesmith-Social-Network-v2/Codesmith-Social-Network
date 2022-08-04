@@ -56,7 +56,7 @@ oauthController.exchangeCode = async (req, res, next) => {
     const authCode = authorizationToken || req.cookies.linkedInAuthCode;
     console.log('MAKING A FETCH CALL TO LINKEDIN API FROM EXCHANGECODE');
     const URL = `https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=${authCode}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=${REDIRECT_URI}`;
-    console.log('API URL:', URL);
+    // console.log('API URL:', URL);
     const response = await fetch(URL,
       {
         method: 'POST',
@@ -83,7 +83,7 @@ oauthController.exchangeCode = async (req, res, next) => {
     // accessToken.access_token ? res.cookie('linkedInAuthCode', accessToken.access_token) : res.cookie('linkedInAuthCode', authorizationToken);
     res.cookie('linkedInAuthCode', authorizationToken);
     res.cookie('access_token', accessToken.access_token);
-    console.log('in exchangeCode, about to execute next()');
+    console.log('in exchangeCode, just finished setting auth token and access token cookies, about to execute next()');
     return next();
   } 
   catch(err) {
@@ -138,6 +138,7 @@ oauthController.callEmailAPI = async (req, res, next) => {
 };
 
 oauthController.userComplete = async (req, res, next) => {
+  console.log('hello from oauthController.js userComplete!');
   const text = `SELECT cohort FROM residents WHERE id=${req.cookies.userId} AND cohort=''`;
   try {
     let complete = await db.query(text);

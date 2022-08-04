@@ -242,11 +242,17 @@ userControllers.registerUser = async (req, res, next) => {
 
 //delete user requiring @value ( req.body.id )
 userControllers.deleteUser = async (req, res, next) => {
+  // console.log('req.body for delete:', req.body);
+  // console.log(req.cookies.userId);
   try {
-    const text = `DELETE FROM residents WHERE id=${req.body.id}`;
+    const text = `DELETE FROM residents WHERE id='${req.cookies.userId}'`;
     const userDeleted = await db.query(text);
     console.log('userDeleted: ', userDeleted);
     res.locals.userDeleted = userDeleted;
+    // clear all cookies
+    res.clearCookie('userId');
+    res.clearCookie('access_token');
+    res.clearCookie('linkedInAuthCode');
     return next();
   } catch (err) {
     return next({ log: `userControllers.deleteUser error: ${err}`, message: 'Error found @ userControllers.deleteUser' });

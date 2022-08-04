@@ -29,7 +29,8 @@ router.post('/update', userControllers.updateUser, (req, res) => {
 // adding delete functionality
 router.post('/delete', userControllers.deleteUser, (req, res) => {
   console.log('deleting user...');
-  return res.status(200);
+  // redirect to landing (login) page (went from '/residents/delete' to '/')
+  return res.redirect('../');
 });
 
 module.exports = router;

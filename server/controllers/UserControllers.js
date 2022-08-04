@@ -249,13 +249,10 @@ userControllers.deleteUser = async (req, res, next) => {
     const userDeleted = await db.query(text);
     console.log('userDeleted: ', userDeleted);
     res.locals.userDeleted = userDeleted;
-<<<<<<< HEAD
     // clear all cookies
     res.clearCookie('userId');
     res.clearCookie('access_token');
     res.clearCookie('linkedInAuthCode');
-=======
->>>>>>> dev
     return next();
   } catch (err) {
     return next({ log: `userControllers.deleteUser error: ${err}`, message: 'Error found @ userControllers.deleteUser' });

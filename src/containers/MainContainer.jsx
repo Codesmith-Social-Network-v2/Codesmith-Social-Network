@@ -8,8 +8,8 @@ export default function MainContainer() {
   const [cohortIsSet, setCohort] = useState(false);
   // const [isComplete, changeComplete] = useState(false);
 
+  if (document.cookie) console.log('document.cookie:', document.cookie); // document.userId, document.linkedInAuthCode
   const getCookie = (cookie) => {
-    if (document.cookie) console.log('document.cookie:', document.cookie); // document.userId, document.linkedInAuthCode
     return document.cookie
       .split('; ')
       .find(row => row.startsWith(cookie + '='))
@@ -26,32 +26,40 @@ export default function MainContainer() {
     //Fetching to the server, whether user is Authenticated and cohortisset
 
     if (getCookie('userId') && getCookie('linkedInAuthCode') && getCookie('linkedInAuthCode') !== 'undefined') {
-      console.log('found a user ID and auth code, going to verify user');
+      console.log("found a user ID and auth code, going to verify user (fetching '/verifyuser')");
+      // we just want to check if there's a match with getCookie('userId') and database userId
+      // AND we want to check if there's a match with getCookie('linkedInAuthCode') and database access_token
+
+
+      // we might not need to make a GET request to this route
       fetch('http://localhost:8080/verifyuser', {
         credentials: 'same-origin',
       })
+      .then(res => res.json())
       .then(res => {
         console.log('res inside fetch call for /verifyuser: ', res);
-        if (res.status === 200) {
+        if (res.status !== 400) {
           changeAuthenticated(true);
 
-          // document.cookie.userId is NOT null/undefined, then...
-          fetch('http://localhost:8080/verifyuser/complete')
-          .then(res => {
-            console.log('res before json()', res);
-            return res.json()
-          })
-          .then(res => {
-            console.log('res inside fetch call for /verifyuser/complete');
-            console.log('res returned from oauthController.userComplete:', res);
+          // // document.cookie.userId is NOT null/undefined, then...
+          // fetch('http://localhost:8080/verifyuser/complete')
+          // .then(res => {
+          //   console.log('res before json()', res);
+          //   return res.json();
+          // })
+          // .then(res => {
+          //   console.log('res inside fetch call for /verifyuser/complete');
+          //   console.log('res returned from oauthController.userComplete:', res);
             if (res) setCohort(true);
-          });
+          // });
         }
       });
     } else {
       console.log('user ID and/or auth token not found');
       changeAuthenticated(false);
+      // send user to route (via fetch request) that runs through oauthController exchangeCode
     }
+    // for calling linkedIn API the second time around
     // if (getCookie('userId')) { // document.cookie.userId is NOT null/undefined, then...
     //   fetch('http://localhost:8080/verifyuser/complete')
     //     .then(res => res.json())
@@ -61,6 +69,9 @@ export default function MainContainer() {
     //       if (res) setCohort(true);
     //     });
     // }
+    console.log('hello at the bottom of MainContainer.jsx!');
+    console.log('isAuthenticated', isAuthenticated);
+    console.log('cohortIsSet', cohortIsSet);
   });
 
   return (

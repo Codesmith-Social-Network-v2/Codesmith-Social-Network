@@ -83,6 +83,7 @@ oauthController.exchangeCode = async (req, res, next) => {
     // accessToken.access_token ? res.cookie('linkedInAuthCode', accessToken.access_token) : res.cookie('linkedInAuthCode', authorizationToken);
     res.cookie('linkedInAuthCode', authorizationToken);
     res.cookie('access_token', accessToken.access_token);
+
     console.log('in exchangeCode, just finished setting auth token and access token cookies, about to execute next()');
     return next();
   } 

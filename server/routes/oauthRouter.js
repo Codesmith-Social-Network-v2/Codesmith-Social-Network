@@ -15,7 +15,8 @@ router.get('/',
   verifyUserExists,
   createUser,
   (req, res) => {
-    return res.redirect('http://localhost:8080/');
+    console.log('We are at the end of the oauthRouter.js middleware chain!');
+    return res.redirect('/');
   });
 
 module.exports = router;
